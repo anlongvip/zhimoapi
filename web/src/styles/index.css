@@ -177,7 +177,9 @@ For commercial licensing, please contact support@quantumnous.com
 
 @media (prefers-reduced-motion: reduce) {
   .skeleton-shimmer,
-  .auto-skeleton-fade [class^='skeleton-'] {
+  .auto-skeleton-fade [class^='skeleton-'],
+  .animate-hero-float,
+  .animate-model-marquee {
     animation: none !important;
     background: var(--skeleton-base) !important;
   }
@@ -550,11 +552,31 @@ For commercial licensing, please contact support@quantumnous.com
   .landing-animate-fade-in,
   .landing-animate-scale-in,
   .landing-animate-fade-left,
-  .landing-animate-fade-right {
+  .landing-animate-fade-right,
+  .animate-hero-float,
+  .animate-model-marquee {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
   }
+}
+
+@keyframes hero-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes model-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-hero-float {
+  animation: hero-float 5s ease-in-out infinite;
+}
+.animate-model-marquee {
+  animation: model-marquee 34s linear infinite;
+}
+.model-marquee:hover .animate-model-marquee {
+  animation-play-state: paused;
 }
 
 /* Micro-interactions — Vercel-style subtle hover/active feedback */
