@@ -65,6 +65,8 @@ export function mapStatusDataToConfig(
 ): Partial<SystemConfig> {
   if (!data) return {}
 
+  const configuredSystemName =
+    (data.system_name as string | undefined)?.trim()
   const quotaDisplayType =
     (data.quota_display_type as CurrencyDisplayType | undefined) ??
     DEFAULT_CURRENCY_CONFIG.quotaDisplayType
@@ -92,7 +94,10 @@ export function mapStatusDataToConfig(
   }
 
   return {
-    systemName: (data.system_name as string | undefined) || DEFAULT_SYSTEM_NAME,
+    systemName:
+      configuredSystemName && configuredSystemName !== 'New API'
+        ? configuredSystemName
+        : DEFAULT_SYSTEM_NAME,
     logo: (data.logo as string | undefined) || DEFAULT_LOGO,
     footerHtml: data.footer_html as string | undefined,
     demoSiteEnabled: data.demo_site_enabled as boolean | undefined,
