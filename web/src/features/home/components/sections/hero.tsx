@@ -17,7 +17,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 For commercial licensing, please contact support@quantumnous.com
 */
 import { Link } from '@tanstack/react-router'
-import { ArrowRight, ArrowUpRight, BookOpen } from 'lucide-react'
+import { ArrowRight, BookOpen } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '@/components/ui/button'
@@ -41,18 +41,11 @@ export function Hero(props: HeroProps) {
     (status?.docs_link as string | undefined) || 'https://docs.newapi.pro'
 
   const renderDocsButton = () => {
-    const isExternal = docsUrl.startsWith('http')
     const button = (
       <Button
         variant='outline'
         className='group border-border/50 hover:border-border hover:bg-muted/50 inline-flex h-11 items-center gap-1.5 rounded-xl px-5 text-sm font-medium'
-        render={
-          isExternal ? (
-            <a href={docsUrl} target='_blank' rel='noopener noreferrer' />
-          ) : (
-            <Link to={docsUrl} />
-          )
-        }
+        render={<a href={docsUrl} target='_blank' rel='noopener noreferrer' />}
       >
         <BookOpen className='text-muted-foreground/80 group-hover:text-foreground size-4 transition-colors duration-200' />
         <span>{t('View documentation')}</span>
