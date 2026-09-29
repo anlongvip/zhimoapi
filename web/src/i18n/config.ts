@@ -29,6 +29,26 @@ import vi from './locales/vi.json'
 import zhTW from './locales/zh-TW.json'
 import zhCN from './locales/zh.json'
 
+// Older releases cached the browser-detected locale, which could leave Chinese
+// visitors stuck in English after the default language changes. Migrate that
+// one-time automatic English value to Simplified Chinese; future user choices
+// are still stored and respected by the existing language switcher.
+const LANGUAGE_DEFAULT_MIGRATION_KEY = 'zhimo-language-default-v1'
+if (typeof window !== 'undefined') {
+  try {
+    const storage = window.localStorage
+    if (!storage.getItem(LANGUAGE_DEFAULT_MIGRATION_KEY)) {
+      const savedLanguage = storage.getItem('i18nextLng')?.toLowerCase()
+      if (savedLanguage === 'en' || savedLanguage?.startsWith('en-')) {
+        storage.setItem('i18nextLng', 'zhCN')
+      }
+      storage.setItem(LANGUAGE_DEFAULT_MIGRATION_KEY, '1')
+    }
+  } catch {
+    // Browser storage may be disabled; fallbackLng still defaults to Chinese.
+  }
+}
+
 export const resources = {
   en,
   zhCN,
@@ -44,7 +64,7 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    fallbackLng: 'en',
+    fallbackLng: 'zhCN',
     supportedLngs: ['en', 'zhCN', 'fr', 'ru', 'ja', 'vi', 'zhTW'],
     load: 'currentOnly',
     nsSeparator: false, // Allow literal colons in keys (e.g., URLs, labels)
@@ -53,7 +73,7 @@ i18n
       escapeValue: false, // not needed for react as it escapes by default
     },
     detection: {
-      order: ['localStorage', 'navigator'],
+      order: ['localStorage'],
       caches: ['localStorage'],
       // Browsers report `zh-CN`/`zh-TW`/`zh`; map them onto our `zhCN`/`zhTW`
       // codes (non-Chinese codes pass through for normal supportedLngs matching).

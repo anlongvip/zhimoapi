@@ -98,7 +98,11 @@ export function mapStatusDataToConfig(
       configuredSystemName && configuredSystemName !== 'New API'
         ? configuredSystemName
         : DEFAULT_SYSTEM_NAME,
-    logo: (data.logo as string | undefined) || DEFAULT_LOGO,
+    logo:
+      !(data.logo as string | undefined) ||
+      (data.logo as string | undefined) === '/logo.png'
+        ? DEFAULT_LOGO
+        : (data.logo as string),
     footerHtml: data.footer_html as string | undefined,
     demoSiteEnabled: data.demo_site_enabled as boolean | undefined,
     displayTokenStatEnabled: data.display_token_stat_enabled as

@@ -22,7 +22,7 @@ For commercial licensing, please contact support@quantumnous.com
 
 // System Configuration Defaults
 export const DEFAULT_SYSTEM_NAME = 'ZhimoAPI / 智墨 API'
-export const DEFAULT_LOGO = '/logo.png'
+export const DEFAULT_LOGO = '/zhimo-api-symbol.svg'
 
 // LocalStorage Keys
 export const STORAGE_KEYS = {
