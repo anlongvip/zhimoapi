@@ -29,6 +29,26 @@ import vi from './locales/vi.json'
 import zhTW from './locales/zh-TW.json'
 import zhCN from './locales/zh.json'
 
+// Older releases cached the browser-detected locale, which could leave Chinese
+// visitors stuck in English after the default language changes. Migrate that
+// one-time automatic English value to Simplified Chinese; future user choices
+// are still stored and respected by the existing language switcher.
+const LANGUAGE_DEFAULT_MIGRATION_KEY = 'zhimo-language-default-v1'
+if (typeof window !== 'undefined') {
+  try {
+    const storage = window.localStorage
+    if (!storage.getItem(LANGUAGE_DEFAULT_MIGRATION_KEY)) {
+      const savedLanguage = storage.getItem('i18nextLng')?.toLowerCase()
+      if (savedLanguage === 'en' || savedLanguage?.startsWith('en-')) {
+        storage.setItem('i18nextLng', 'zhCN')
+      }
+      storage.setItem(LANGUAGE_DEFAULT_MIGRATION_KEY, '1')
+    }
+  } catch {
+    // Browser storage may be disabled; fallbackLng still defaults to Chinese.
+  }
+}
+
 export const resources = {
   en,
   zhCN,
