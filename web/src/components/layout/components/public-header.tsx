@@ -17,6 +17,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 For commercial licensing, please contact support@quantumnous.com
 */
 import { Link, useNavigate, useRouterState } from '@tanstack/react-router'
+import { ArrowUpRight } from 'lucide-react'
 import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -113,10 +114,11 @@ export function PublicHeader(props: PublicHeaderProps) {
   let authContent = (
     <Button
       size='sm'
-      className='h-8 rounded-lg px-3.5 text-xs font-medium'
+      className='h-11 rounded-xl px-5 text-sm font-semibold'
       render={<Link to='/sign-in' />}
     >
-      {t('Sign in')}
+      {t('Enter console')}
+      <ArrowUpRight className='ml-1 size-3.5' />
     </Button>
   )
   if (isAuthenticated) authContent = <ProfileDropdown />

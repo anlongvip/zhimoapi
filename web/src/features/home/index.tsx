@@ -26,7 +26,7 @@ import { useTheme } from '@/context/theme-provider'
 import { isLikelyHtml } from '@/lib/content-format'
 import { useAuthStore } from '@/stores/auth-store'
 
-import { CTA, Features, Hero, HowItWorks, Stats } from './components'
+import { CTA, Features, Hero } from './components'
 import { useHomePageContent } from './hooks'
 
 export function Home() {
@@ -60,7 +60,7 @@ export function Home() {
 
   if (!isLoaded) {
     return (
-      <PublicLayout showMainContainer={false}>
+      <PublicLayout showMainContainer={false} siteName='智墨算力聚合平台'>
         <main className='flex min-h-screen items-center justify-center'>
           <div className='text-muted-foreground'>{t('Loading...')}</div>
         </main>
@@ -71,7 +71,7 @@ export function Home() {
   if (content) {
     if (isUrl) {
       return (
-        <PublicLayout showMainContainer={false}>
+        <PublicLayout showMainContainer={false} siteName='智墨算力聚合平台'>
           {/*
             allow-top-navigation-by-user-activation: the custom home page URL is
             admin-configured (trusted); this lets its target="_top" nav/menu links
@@ -96,7 +96,7 @@ export function Home() {
 
     if (contentIsHtml) {
       return (
-        <PublicLayout showMainContainer={false}>
+        <PublicLayout showMainContainer={false} siteName='智墨算力聚合平台'>
           <RichContent
             mode='html'
             htmlVariant='isolated'
@@ -108,7 +108,7 @@ export function Home() {
     }
 
     return (
-      <PublicLayout>
+      <PublicLayout siteName='智墨算力聚合平台'>
         <div className='mx-auto max-w-6xl px-4 py-8'>
           <RichContent
             mode='markdown'
@@ -121,13 +121,11 @@ export function Home() {
   }
 
   return (
-    <PublicLayout showMainContainer={false}>
+    <PublicLayout showMainContainer={false} siteName='智墨算力聚合平台'>
       <Hero isAuthenticated={isAuthenticated} />
-      <Stats />
       <Features />
-      <HowItWorks />
-      <CTA isAuthenticated={isAuthenticated} />
-      <Footer />
+      <CTA />
+      <Footer name='智墨算力聚合平台' />
     </PublicLayout>
   )
 }
