@@ -48,7 +48,7 @@ export function CTA() {
           </div>
           <Button
             className='relative h-11 rounded-xl bg-white px-5 font-semibold text-slate-900 hover:bg-slate-100'
-            render={<Link to='/about/' />}
+            render={<Link to='/about' />}
           >
             {t('Contact us')}
             <ArrowRight className='ml-1.5 size-4' />

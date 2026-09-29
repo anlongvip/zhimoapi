@@ -26,7 +26,7 @@ import { useSystemConfig } from '@/hooks/use-system-config'
 import { cn } from '@/lib/utils'
 import { getLobeIcon } from '@/lib/lobe-icon'
 
-import { AI_MODELS } from '../constants'
+import { AI_MODELS } from '../../constants'
 
 interface HeroProps {
   className?: string
