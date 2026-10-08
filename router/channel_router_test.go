@@ -24,6 +24,24 @@ func TestChannelDefaultBaseURLsRequireReadPermission(t *testing.T) {
 	assert.Equal(t, http.StatusUnauthorized, recorder.Code)
 }
 
+func TestInvoiceRoutesRejectAnonymousRequests(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+	engine := gin.New()
+	registerInvoiceRoutes(engine.Group("/api"))
+	for _, request := range []struct{ method, path string }{
+		{"GET", "/api/invoices"}, {"POST", "/api/invoices"},
+		{"GET", "/api/invoices/settings"}, {"GET", "/api/invoices/orders"},
+		{"GET", "/api/invoices/1"}, {"GET", "/api/invoices/1/file"}, {"POST", "/api/invoices/1/withdraw"},
+		{"GET", "/api/invoices/admin"}, {"PUT", "/api/invoices/admin/settings"},
+		{"GET", "/api/invoices/admin/1"}, {"POST", "/api/invoices/admin/1/review"},
+		{"POST", "/api/invoices/admin/1/file"}, {"GET", "/api/invoices/admin/1/file"},
+	} {
+		recorder := httptest.NewRecorder()
+		engine.ServeHTTP(recorder, httptest.NewRequest(request.method, request.path, nil))
+		require.Equal(t, http.StatusUnauthorized, recorder.Code, "%s %s", request.method, request.path)
+	}
+}
+
 func TestChannelStatusRoutesUseExpectedPermissions(t *testing.T) {
 	assertChannelRoutePermission(t, http.MethodGet, "/:id/vllm/status", authz.ChannelRead, controller.GetVLLMChannelStatus)
 	assertChannelRoutePermission(t, http.MethodGet, "/:id/sglang/status", authz.ChannelRead, controller.GetSGLangChannelStatus)

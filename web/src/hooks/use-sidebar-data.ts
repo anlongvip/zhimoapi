@@ -112,6 +112,11 @@ export function useSidebarData(): SidebarData {
         title: t('Personal'),
         items: [
           {
+            title: t('Invoice applications'),
+            url: '/invoices',
+            icon: FileText,
+          },
+          {
             title: t('Wallet'),
             url: '/wallet',
             icon: Wallet,
@@ -132,6 +137,11 @@ export function useSidebarData(): SidebarData {
         id: 'admin',
         title: t('Admin'),
         items: [
+          {
+            title: t('Invoice management'),
+            url: '/invoice-management',
+            icon: FileText,
+          },
           {
             title: t('Channels'),
             url: '/channels',
