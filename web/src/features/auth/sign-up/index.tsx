@@ -19,21 +19,17 @@ For commercial licensing, please contact support@quantumnous.com
 import { Link } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 
-import { useStatus } from '@/hooks/use-status'
-
 import { AuthLayout } from '../auth-layout'
-import { TermsFooter } from '../components/terms-footer'
 import { SignUpForm } from './components/sign-up-form'
 
 export function SignUp() {
   const { t } = useTranslation()
-  const { status } = useStatus()
 
   return (
     <AuthLayout>
       <div className='w-full space-y-8'>
         <div className='space-y-2'>
-          <h2 className='text-center text-2xl font-semibold tracking-tight sm:text-left'>
+          <h2 className='text-left text-2xl font-semibold tracking-tight'>
             {t('Create an account')}
           </h2>
           <p className='text-muted-foreground text-left text-sm sm:text-base'>
@@ -49,12 +45,6 @@ export function SignUp() {
         </div>
 
         <SignUpForm />
-
-        <TermsFooter
-          variant='sign-up'
-          status={status}
-          className='text-center'
-        />
       </div>
     </AuthLayout>
   )

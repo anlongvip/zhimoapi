@@ -38,6 +38,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useTheme } from '@/context/theme-provider'
 import { register, wechatLoginByCode } from '@/features/auth/api'
 import { LegalConsent } from '@/features/auth/components/legal-consent'
 import { OAuthProviders } from '@/features/auth/components/oauth-providers'
@@ -60,6 +61,7 @@ export function SignUpForm({
   ...props
 }: React.HTMLAttributes<HTMLFormElement>) {
   const { t } = useTranslation()
+  const { resolvedTheme } = useTheme()
   const [isLoading, setIsLoading] = useState(false)
   const [verificationCode, setVerificationCode] = useState('')
   const [agreedToLegal, setAgreedToLegal] = useState(false)
@@ -248,7 +250,10 @@ export function SignUpForm({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className={cn('grid gap-4', className)}
+        className={cn(
+          'grid gap-5 [&_[data-slot=input]]:rounded-full [&_[data-slot=input]]:px-3',
+          className
+        )}
         {...props}
       >
         {/* Username Field */}
@@ -352,13 +357,16 @@ export function SignUpForm({
 
         {/* Turnstile */}
         {isTurnstileEnabled && (
-          <div className='mt-2'>
-            <Turnstile
-              key={turnstileWidgetKey}
-              siteKey={turnstileSiteKey}
-              onVerify={setTurnstileToken}
-            />
-          </div>
+          <Turnstile
+            key={turnstileWidgetKey}
+            siteKey={turnstileSiteKey}
+            onVerify={setTurnstileToken}
+            onExpire={() => setTurnstileToken('')}
+            size='flexible'
+            theme={resolvedTheme === 'dark' ? 'dark' : 'light'}
+            framed
+            className='mt-1'
+          />
         )}
 
         <LegalConsent
@@ -371,7 +379,7 @@ export function SignUpForm({
         {/* Submit Button */}
         <Button
           type='submit'
-          className='mt-2 w-full justify-center gap-2'
+          className='mt-1 w-full justify-center gap-2 rounded-full'
           disabled={
             isLoading ||
             (requiresLegalConsent && !agreedToLegal) ||

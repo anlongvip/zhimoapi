@@ -27,6 +27,40 @@ afterEach(() => {
 })
 
 describe('Turnstile login presentation', () => {
+  it('clips the native border and inline baseline only when card framing is enabled', () => {
+    const renderWidget = vi.fn(
+      (_element: HTMLElement, _options: Record<string, unknown>) => 'widget-id'
+    )
+    const remove = vi.fn()
+    window.turnstile = { render: renderWidget, remove }
+    const { rerender } = render(
+      <Turnstile siteKey='test-site' framed onVerify={vi.fn()} />
+    )
+    const framedHost = renderWidget.mock.calls[0]?.[0]
+    expect(framedHost).toHaveClass(
+      '-m-px',
+      'w-[calc(100%+2px)]',
+      'text-[0px]',
+      'leading-[0]'
+    )
+    expect(framedHost?.parentElement).toHaveClass(
+      'overflow-hidden',
+      'rounded-[1rem]',
+      'border'
+    )
+    rerender(
+      <Turnstile
+        siteKey='test-site'
+        className='normal-widget'
+        onVerify={vi.fn()}
+      />
+    )
+    const normalHost = renderWidget.mock.calls[1]?.[0]
+    expect(normalHost).toHaveClass('normal-widget')
+    expect(normalHost).not.toHaveClass('-m-px', 'text-[0px]')
+    expect(remove).toHaveBeenCalledWith('widget-id')
+  })
+
   it('uses flexible width and the page theme without rerendering on callback changes', () => {
     const renderWidget = vi.fn(
       (_element: HTMLElement, _options: Record<string, unknown>) => 'widget-id'
