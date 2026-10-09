@@ -176,7 +176,8 @@ func TestManageUserDemoteAdvancesAuthVersionAndRevokesSessionsOnce(t *testing.T)
 
 	sessionUpdateCount := 0
 	require.NoError(t, db.Callback().Update().Before("gorm:update").Register("test:count_demote_session_updates", func(tx *gorm.DB) {
-		if tx.Statement != nil && tx.Statement.Table == "user_sessions" {
+		// Only count revocation updates, not SQLite's no-op write lock.
+		if tx.Statement != nil && tx.Statement.Table == "user_sessions" && !tx.Statement.SkipHooks {
 			sessionUpdateCount++
 		}
 	}))
