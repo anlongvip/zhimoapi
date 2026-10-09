@@ -471,7 +471,8 @@ func TestRevokeUserSessionsReturnsCumulativeProgressAndSupportsRetry(t *testing.
 	updateCalls := 0
 	callbackRegistered := true
 	require.NoError(t, DB.Callback().Update().Before("gorm:update").Register(callbackName, func(tx *gorm.DB) {
-		if tx.Statement != nil && tx.Statement.Table == "user_sessions" {
+		// Count status-changing batches, not SQLite's no-op write lock.
+		if tx.Statement != nil && tx.Statement.Table == "user_sessions" && !tx.Statement.SkipHooks {
 			updateCalls++
 			if updateCalls == 2 {
 				tx.AddError(forcedErr)
