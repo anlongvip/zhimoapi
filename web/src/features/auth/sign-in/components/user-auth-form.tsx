@@ -402,16 +402,16 @@ export function UserAuthForm({
 
             {/* Turnstile */}
             {isTurnstileEnabled && (
-              <div className='bg-muted/40 mt-1 overflow-hidden rounded-2xl border'>
-                <Turnstile
-                  key={turnstileWidgetKey}
-                  siteKey={turnstileSiteKey}
-                  onVerify={setTurnstileToken}
-                  size='flexible'
-                  theme={resolvedTheme === 'dark' ? 'dark' : 'light'}
-                  onExpire={() => setTurnstileToken('')}
-                />
-              </div>
+              <Turnstile
+                key={turnstileWidgetKey}
+                siteKey={turnstileSiteKey}
+                onVerify={setTurnstileToken}
+                size='flexible'
+                framed
+                className='mt-1'
+                theme={resolvedTheme === 'dark' ? 'dark' : 'light'}
+                onExpire={() => setTurnstileToken('')}
+              />
             )}
           </>
         )}

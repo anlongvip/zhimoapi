@@ -46,8 +46,15 @@ describe('login entry cards', () => {
     expect(checkbox).not.toBeChecked()
     expect(screen.getByText('Required')).toBeVisible()
     expect(screen.getAllByRole('link')).toHaveLength(2)
+    expect(checkbox.parentElement).toHaveClass('border-primary/70')
     await userEvent.click(checkbox)
     expect(checkbox).toBeChecked()
+    expect(screen.queryByText('Required')).not.toBeInTheDocument()
+    expect(checkbox.parentElement).not.toHaveClass('border-primary/70')
+    await userEvent.click(checkbox)
+    expect(checkbox).not.toBeChecked()
+    expect(screen.getByText('Required')).toBeVisible()
+    expect(checkbox.parentElement).toHaveClass('border-primary/70')
   })
 
   it('shows enabled providers in two columns while consent blocks every provider', () => {

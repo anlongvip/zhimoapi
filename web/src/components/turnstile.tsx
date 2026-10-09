@@ -18,6 +18,8 @@ For commercial licensing, please contact support@quantumnous.com
 */
 import { useEffect, useRef } from 'react'
 
+import { cn } from '@/lib/utils'
+
 declare global {
   interface Window {
     turnstile?: {
@@ -34,6 +36,7 @@ interface TurnstileProps {
   className?: string
   size?: 'normal' | 'flexible' | 'compact'
   theme?: 'auto' | 'light' | 'dark'
+  framed?: boolean
 }
 
 export function Turnstile({
@@ -43,6 +46,7 @@ export function Turnstile({
   className,
   size = 'normal',
   theme = 'auto',
+  framed = false,
 }: TurnstileProps) {
   const ref = useRef<HTMLDivElement | null>(null)
   const callbacks = useRef({ onVerify, onExpire })
@@ -83,7 +87,23 @@ export function Turnstile({
       script.removeEventListener('load', render)
       if (widgetId !== undefined) window.turnstile?.remove(widgetId)
     }
-  }, [siteKey, size, theme])
+  }, [siteKey, size, theme, framed])
 
-  return <div ref={ref} className={className} />
+  if (!framed) return <div ref={ref} className={className} />
+
+  return (
+    <div
+      className={cn(
+        'bg-muted/40 overflow-hidden rounded-[1rem] border',
+        className
+      )}
+    >
+      {/* Clip only the widget's 1px rectangular border. Zero line height
+          removes the inline iframe baseline gap without resizing its contents. */}
+      <div
+        ref={ref}
+        className='-m-px w-[calc(100%+2px)] text-[0px] leading-[0]'
+      />
+    </div>
+  )
 }

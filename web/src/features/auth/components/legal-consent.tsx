@@ -53,7 +53,8 @@ export function LegalConsent({
   return (
     <div
       className={cn(
-        'border-primary/70 bg-muted/40 flex items-center gap-3 rounded-2xl border p-3 shadow-lg shadow-primary/10',
+        'bg-muted/40 flex items-center gap-3 rounded-[1rem] border p-3 transition-[border-color,box-shadow]',
+        !checked && 'border-primary/70 shadow-lg shadow-primary/10',
         className
       )}
     >
@@ -92,10 +93,12 @@ export function LegalConsent({
           )}
         </span>
       </Label>
-      <span className='border-primary/70 text-primary flex shrink-0 items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-semibold'>
-        <Check className='size-3' aria-hidden />
-        {t('Required')}
-      </span>
+      {!checked && (
+        <span className='border-primary/70 text-primary flex shrink-0 items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-semibold'>
+          <Check className='size-3' aria-hidden />
+          {t('Required')}
+        </span>
+      )}
     </div>
   )
 }
