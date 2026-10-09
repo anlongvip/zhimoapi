@@ -959,6 +959,15 @@ func (user *User) delete(identity *AuthSessionIdentity) (int64, error) {
 	var nextAuthVersion int64
 	var revokedAccessTokens int64
 	if err := DB.Transaction(func(tx *gorm.DB) error {
+		// Acquire SQLite's write lock before reading session state. A concurrent
+		// proof claim can otherwise prevent this deferred read transaction from
+		// upgrading to a writer, even after the one-time proof was consumed.
+		if common.UsingMainDatabase(common.DatabaseTypeSQLite) {
+			if err := tx.Model(&User{}).Where("id = ?", user.Id).
+				UpdateColumn("auth_version", gorm.Expr("auth_version")).Error; err != nil {
+				return err
+			}
+		}
 		if identity != nil {
 			if err := ValidateAuthSessionWithTx(tx, *identity); err != nil {
 				return err
