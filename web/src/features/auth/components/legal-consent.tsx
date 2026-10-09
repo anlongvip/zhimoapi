@@ -16,6 +16,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
+import { Check } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { Checkbox } from '@/components/ui/checkbox'
@@ -52,7 +53,7 @@ export function LegalConsent({
   return (
     <div
       className={cn(
-        'border-border/60 bg-muted/40 flex items-start gap-3 rounded-md border p-3',
+        'border-primary/70 bg-muted/40 flex items-center gap-3 rounded-2xl border p-3 shadow-lg shadow-primary/10',
         className
       )}
     >
@@ -60,11 +61,11 @@ export function LegalConsent({
         id='legal-consent'
         checked={checked}
         onCheckedChange={handleChange}
-        className='mt-0.5'
+        className='size-5 rounded-full'
       />
       <Label
         htmlFor='legal-consent'
-        className='text-muted-foreground items-start gap-1 text-left text-xs leading-5 font-normal'
+        className='text-muted-foreground min-w-0 flex-1 items-start gap-1 text-left text-xs leading-5 font-normal sm:text-sm'
       >
         <span>
           {t('I have read and agree to the')}{' '}
@@ -75,10 +76,10 @@ export function LegalConsent({
               rel='noopener noreferrer'
               className='text-primary hover:underline'
             >
-              {t('User Agreement')}
+              《{t('User Agreement')}》
             </a>
           )}
-          {hasUserAgreement && hasPrivacyPolicy && ' and the '}
+          {hasUserAgreement && hasPrivacyPolicy && ` ${t('and')} `}
           {hasPrivacyPolicy && (
             <a
               href='/privacy-policy'
@@ -86,12 +87,15 @@ export function LegalConsent({
               rel='noopener noreferrer'
               className='text-primary hover:underline'
             >
-              {t('Privacy Policy')}
+              《{t('Privacy Policy')}》
             </a>
           )}
-          .
         </span>
       </Label>
+      <span className='border-primary/70 text-primary flex shrink-0 items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-semibold'>
+        <Check className='size-3' aria-hidden />
+        {t('Required')}
+      </span>
     </div>
   )
 }

@@ -16,6 +16,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
+import { Google, Microsoft } from '@lobehub/icons'
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -47,6 +48,14 @@ type ProviderButton = {
   onClick: () => void
   icon?: ReactNode
   disabled?: boolean
+}
+
+function providerBrandIcon(name: string) {
+  if (/google|谷歌/i.test(name)) return <Google.Color size={20} aria-hidden />
+  if (/microsoft|微软/i.test(name)) {
+    return <Microsoft.Color size={20} aria-hidden />
+  }
+  return undefined
 }
 
 export function OAuthProviders({
@@ -109,6 +118,7 @@ export function OAuthProviders({
         name: oidcDisplayName,
       }),
       onClick: handleOIDCLogin,
+      icon: providerBrandIcon(oidcDisplayName),
     })
   }
 
@@ -138,6 +148,7 @@ export function OAuthProviders({
         key: `custom-${provider.slug}`,
         label: t('Continue with {{name}}', { name: provider.name }),
         onClick: () => handleCustomOAuthLogin(provider),
+        icon: providerBrandIcon(`${provider.slug} ${provider.name}`),
       })
     }
   }
@@ -157,7 +168,12 @@ export function OAuthProviders({
         </div>
       </div>
 
-      <div className='flex flex-col gap-2'>
+      <div
+        className={cn(
+          'grid gap-2',
+          providerButtons.length > 1 ? 'grid-cols-2' : 'grid-cols-1'
+        )}
+      >
         {providerButtons.map(
           ({ key, label, onClick, icon, disabled: extraDisabled }) => (
             <Button
@@ -166,10 +182,10 @@ export function OAuthProviders({
               type='button'
               disabled={disabled || isLoading || extraDisabled}
               onClick={onClick}
-              className='h-11 w-full justify-center gap-2 rounded-lg'
+              className='h-12 w-full min-w-0 justify-center gap-2 rounded-2xl px-3 text-xs sm:text-sm'
             >
               {icon}
-              {label}
+              <span className='truncate'>{label}</span>
             </Button>
           )
         )}

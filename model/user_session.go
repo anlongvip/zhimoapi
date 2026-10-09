@@ -748,6 +748,15 @@ func revokeUserSessions(userID int, excludedSID, reason string) (int64, error) {
 		var affected int64
 		var revoked []UserSession
 		err := DB.Transaction(func(tx *gorm.DB) error {
+			// SQLite has no SELECT FOR UPDATE. Acquire its write lock before
+			// reading the batch so a concurrent proof claim cannot prevent the
+			// deferred transaction from upgrading its read lock during revocation.
+			if common.UsingMainDatabase(common.DatabaseTypeSQLite) {
+				if err := tx.Model(&UserSession{}).Where("sid IN ?", sids).
+					UpdateColumn("version", gorm.Expr("version")).Error; err != nil {
+					return err
+				}
+			}
 			if err := lockForUpdate(tx).Where("sid IN ? AND status = ?", sids, UserSessionStatusActive).Find(&revoked).Error; err != nil {
 				return err
 			}
