@@ -39,6 +39,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useTheme } from '@/context/theme-provider'
 import { login, wechatLoginByCode } from '@/features/auth/api'
 import { LegalConsent } from '@/features/auth/components/legal-consent'
 import { OAuthProviders } from '@/features/auth/components/oauth-providers'
@@ -66,6 +67,7 @@ export function UserAuthForm({
   ...props
 }: AuthFormProps) {
   const { t } = useTranslation()
+  const { resolvedTheme } = useTheme()
   const [isLoading, setIsLoading] = useState(false)
   const [wechatCode, setWeChatCode] = useState('')
   const [agreedToLegal, setAgreedToLegal] = useState(false)
@@ -346,7 +348,10 @@ export function UserAuthForm({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className={cn('grid gap-4', className)}
+        className={cn(
+          'grid gap-5 [&_[data-slot=input]]:rounded-full [&_[data-slot=input]]:px-3',
+          className
+        )}
         {...props}
       >
         {hasAlternativeLogin && alternativeLoginMethods}
@@ -395,23 +400,15 @@ export function UserAuthForm({
               )}
             />
 
-            {/* Submit Button */}
-            <Button
-              type='submit'
-              className='mt-2 w-full justify-center gap-2'
-              disabled={isLoading || (requiresLegalConsent && !agreedToLegal)}
-            >
-              {isLoading ? <Loader2 className='animate-spin' /> : <LogIn />}
-              {t('Sign in')}
-            </Button>
-
             {/* Turnstile */}
             {isTurnstileEnabled && (
-              <div className='mt-2'>
+              <div className='bg-muted/40 mt-1 overflow-hidden rounded-2xl border'>
                 <Turnstile
                   key={turnstileWidgetKey}
                   siteKey={turnstileSiteKey}
                   onVerify={setTurnstileToken}
+                  size='flexible'
+                  theme={resolvedTheme === 'dark' ? 'dark' : 'light'}
                   onExpire={() => setTurnstileToken('')}
                 />
               </div>
@@ -425,6 +422,17 @@ export function UserAuthForm({
           onCheckedChange={setAgreedToLegal}
           className='mt-1'
         />
+
+        {passwordLoginEnabled && (
+          <Button
+            type='submit'
+            className='mt-1 w-full justify-center gap-2 rounded-full'
+            disabled={isLoading || (requiresLegalConsent && !agreedToLegal)}
+          >
+            {isLoading ? <Loader2 className='animate-spin' /> : <LogIn />}
+            {t('Sign in')}
+          </Button>
+        )}
 
         {!hasAlternativeLogin && alternativeLoginMethods}
       </form>
