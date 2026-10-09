@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   account-deletion:
-    name: Account deletion (${{ matrix.dialect }})
+    name: Account security (${{ matrix.dialect }})
     if: github.event.action != 'closed' || github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -54,8 +54,8 @@ jobs:
       - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16
         with:
           go-version-file: go.mod
-      - name: Verify deletion authorization, rollback, revocation, and concurrency
-        run: go test ./controller -run '^TestSecurityAccountDeletion' -count=5 -v -timeout 10m
+      - name: Verify account deletion and Telegram registration security
+        run: go test ./controller -run '^Test(SecurityAccountDeletion|Telegram)' -count=5 -v -timeout 10m
 
   backend:
     name: Backend vet, build, and test

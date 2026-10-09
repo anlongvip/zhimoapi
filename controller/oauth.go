@@ -410,10 +410,12 @@ func findOrCreateOAuthUser(c *gin.Context, provider oauth.Provider, oauthUser *o
 	user := &model.User{}
 	if provider.ProviderUserIDColumn() == "telegram_id" {
 		err := provider.FillUserByProviderID(user, oauthUser.ProviderUserID)
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, nil, oauth.ErrTelegramAccountNotBound
+		if err == nil {
+			return user, nil, nil
 		}
-		return user, nil, err
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil, err
+		}
 	}
 
 	// Check if user already exists with new ID
@@ -564,6 +566,11 @@ func findOrCreateOAuthUser(c *gin.Context, provider oauth.Provider, oauthUser *o
 
 			// Set the provider user ID on the user model and update
 			provider.SetProviderUserID(user, oauthUser.ProviderUserID)
+			if provider.ProviderUserIDColumn() == "telegram_id" {
+				if err := model.ClaimExternalIdentityWithTx(tx, model.ExternalIdentityProviderTelegram, user.TelegramId, user.Id); err != nil {
+					return err
+				}
+			}
 			if err := tx.Model(user).Updates(map[string]any{
 				"github_id":   user.GitHubId,
 				"discord_id":  user.DiscordId,
