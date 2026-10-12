@@ -239,6 +239,11 @@ func TestSecurityAccountDeletionConcurrentRequestsHaveOneWinner(t *testing.T) {
 		Where("user_id = ? AND status = ?", user.Id, model.UserSessionStatusActive).
 		Count(&activeSessions).Error)
 	assert.Zero(t, activeSessions, "the successful deletion must finish revoking sessions")
+	_, _, err := service.ValidateLoginSession(identity)
+	assert.Error(t, err)
+	count, err := model.CountActiveUserSessions(user.Id, time.Now().Unix())
+	require.NoError(t, err)
+	assert.Zero(t, count)
 }
 
 type securityMailbox struct {
